@@ -2,7 +2,7 @@
 
 namespace BigCorp.Models
 {
-    public class ProductLineModel : ProductLine
+    public class StorageModel : Storage
     {
     }
 }

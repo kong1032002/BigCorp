@@ -6,8 +6,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using BigCorp.Datas;
-using BigCorp.Repository;
 using BigCorp.Models;
+using BigCorp.Repository.Interface;
 
 namespace BigCorp.Controllers
 {
@@ -15,9 +15,9 @@ namespace BigCorp.Controllers
     [ApiController]
     public class StocksController : ControllerBase
     {
-        private readonly IStockRepository _stockRepo;
+        private readonly IItemRepository<StockModel> _stockRepo;
 
-        public StocksController(IStockRepository stockRepo)
+        public StocksController(IItemRepository<StockModel> stockRepo)
         {
             _stockRepo = stockRepo;
         }
@@ -28,7 +28,7 @@ namespace BigCorp.Controllers
         {
             try
             {
-                return Ok(await _stockRepo.getStocksAsync());
+                return Ok(await _stockRepo.GetAllAsync());
             }
             catch (Exception ex)
             {
@@ -40,7 +40,7 @@ namespace BigCorp.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<Stock>> GetStock(int id)
         {
-            var stock = await _stockRepo.getStockAsync(id);
+            var stock = await _stockRepo.GetItemAsync(id);
             return stock == null ? NotFound() : Ok(stock);
             //var stock = await _context.Stocks.FindAsync(id);
 
@@ -57,7 +57,7 @@ namespace BigCorp.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> PutStock(int id, StockModel model)
         {
-            await _stockRepo.updateStockAsync(id, model);
+            await _stockRepo.UpdateItemAsync(id, model);
             return Ok();
             //if (id != stock.id)
             //{
@@ -92,8 +92,8 @@ namespace BigCorp.Controllers
         {
             try
             {
-                var newStockId = await _stockRepo.addStockAsync(model);
-                var product = await _stockRepo.getStockAsync(newStockId);
+                var newStockId = await _stockRepo.AddItemAsync(model);
+                var product = await _stockRepo.GetItemAsync(newStockId);
                 return model == null ? NotFound() : Ok(model);
             }
             catch (Exception ex)
@@ -110,7 +110,7 @@ namespace BigCorp.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteStock(int id)
         {
-            await _stockRepo.deleteStockAsync(id);
+            await _stockRepo.RemoveItemAsync(id);
             return Ok();
             //var stock = await _context.Stocks.FindAsync(id);
             //if (stock == null)

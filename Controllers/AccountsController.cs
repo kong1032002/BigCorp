@@ -1,5 +1,5 @@
 ﻿using BigCorp.Models;
-using BigCorp.Repository;
+using BigCorp.Repository.Interface;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 

@@ -103,25 +103,23 @@ namespace BigCorp.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("id"));
 
+                    b.Property<int>("ProductLineid")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Stockid")
+                        .HasColumnType("int");
+
                     b.Property<string>("name")
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("owner")
-                        .HasColumnType("int");
-
-                    b.Property<int>("productLine")
-                        .HasColumnType("int");
 
                     b.Property<int>("status")
                         .HasColumnType("int");
 
-                    b.Property<int>("stock")
-                        .HasColumnType("int");
-
-                    b.Property<int>("warrantyTime")
-                        .HasColumnType("int");
-
                     b.HasKey("id");
+
+                    b.HasIndex("ProductLineid");
+
+                    b.HasIndex("Stockid");
 
                     b.ToTable("Product");
                 });
@@ -304,6 +302,25 @@ namespace BigCorp.Migrations
                     b.HasKey("UserId", "LoginProvider", "Name");
 
                     b.ToTable("AspNetUserTokens", (string)null);
+                });
+
+            modelBuilder.Entity("BigCorp.Datas.Product", b =>
+                {
+                    b.HasOne("BigCorp.Datas.ProductLine", "ProductLine")
+                        .WithMany()
+                        .HasForeignKey("ProductLineid")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("BigCorp.Datas.Stock", "Stock")
+                        .WithMany()
+                        .HasForeignKey("Stockid")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("ProductLine");
+
+                    b.Navigation("Stock");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

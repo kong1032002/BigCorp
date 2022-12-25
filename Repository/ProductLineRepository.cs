@@ -1,11 +1,12 @@
 ﻿using AutoMapper;
 using BigCorp.Datas;
 using BigCorp.Models;
+using BigCorp.Repository.Interface;
 using Microsoft.EntityFrameworkCore;
 
 namespace BigCorp.Repository
 {
-    public class ProductLineRepository : IProductLineRepository
+    public class ProductLineRepository : IItemRepository<ProductLineModel>
     {
         private readonly BigCorpContext _context;
         private readonly IMapper _mapper;
@@ -16,7 +17,7 @@ namespace BigCorp.Repository
             _mapper = mapper;
         }
 
-        public async Task<int> addProductLineAsync(ProductLineModel model)
+        public async Task<int> AddItemAsync(ProductLineModel model)
         {
             var newProductLine = _mapper.Map<ProductLine>(model);
             _context.ProductLines.Add(newProductLine);
@@ -24,7 +25,7 @@ namespace BigCorp.Repository
             return newProductLine.id;
         }
 
-        public async Task deleteProductLineAsync(int id)
+        public async Task RemoveItemAsync(int id)
         {
             var deleteProductLine = _context.ProductLines!.SingleOrDefault(b => b.id == id);
             if (deleteProductLine != null)
@@ -34,19 +35,19 @@ namespace BigCorp.Repository
             }
         }
 
-        public async Task<ProductLineModel> getProductLineAsync(int id)
+        public async Task<ProductLineModel> GetItemAsync(int id)
         {
             var productLine = await _context.ProductLines!.FindAsync(id);
             return _mapper.Map<ProductLineModel>(productLine);
         }
 
-        public async Task<List<ProductLineModel>> getProductLinesAsync()
+        public async Task<List<ProductLineModel>> GetAllAsync()
         {
             var productLines = await _context.ProductLines!.ToListAsync();
             return _mapper.Map<List<ProductLineModel>>(productLines);
         }
 
-        public async Task updateProductLineAsync(int id, ProductLineModel model)
+        public async Task UpdateItemAsync(int id, ProductLineModel model)
         {
             if (id == model.id)
             {

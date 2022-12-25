@@ -1,7 +1,7 @@
 ﻿using BigCorp.Datas;
 using BigCorp.Models;
 
-namespace BigCorp.Repository
+namespace BigCorp.Repository.Interface
 {
     public interface IProductRepository
     {

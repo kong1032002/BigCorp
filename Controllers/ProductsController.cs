@@ -6,8 +6,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using BigCorp.Datas;
-using BigCorp.Repository;
 using BigCorp.Models;
+using BigCorp.Repository.Interface;
 
 namespace BigCorp.Controllers
 {
@@ -15,9 +15,9 @@ namespace BigCorp.Controllers
     [ApiController]
     public class ProductsController : ControllerBase
     {
-        private readonly IProductRepository _productRepo;
+        private readonly IItemRepository<ProductModel> _productRepo;
 
-        public ProductsController(IProductRepository productRepo)
+        public ProductsController(IItemRepository<ProductModel> productRepo)
         {
             _productRepo = productRepo;
         }
@@ -28,7 +28,7 @@ namespace BigCorp.Controllers
         {
             try
             {
-                return Ok(await _productRepo.getProductsAsync());
+                return Ok(await _productRepo.GetAllAsync());
             }
             catch (Exception ex)
             {
@@ -40,7 +40,7 @@ namespace BigCorp.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<Product>> GetProduct(int id)
         {
-            var product = await _productRepo.getProductAsync(id);
+            var product = await _productRepo.GetItemAsync(id);
             return product == null ? NotFound() : Ok(product);
         }
 
@@ -49,7 +49,7 @@ namespace BigCorp.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> PutProduct(int id, ProductModel model)
         {
-            await _productRepo.updateProductAsync(id, model);
+            await _productRepo.UpdateItemAsync(id, model);
             return Ok();
         }
 
@@ -60,8 +60,8 @@ namespace BigCorp.Controllers
         {
             try
             {
-                var newProductId = await _productRepo.addProductAsync(model);
-                var product = await _productRepo.getProductAsync(newProductId);
+                var newProductId = await _productRepo.AddItemAsync(model);
+                var product = await _productRepo.GetItemAsync(newProductId);
                 return model == null ? NotFound() : Ok(model);
             } catch (Exception ex) { 
                 return BadRequest(ex.Message);
@@ -72,7 +72,7 @@ namespace BigCorp.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteProduct(int id)
         {
-            await _productRepo.deleteProductAsync(id);
+            await _productRepo.RemoveItemAsync(id);
             return Ok();
         }
 

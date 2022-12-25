@@ -1,6 +1,6 @@
 ﻿using BigCorp.Models;
 
-namespace BigCorp.Repository
+namespace BigCorp.Repository.Interface
 {
     public interface IStockRepository
     {

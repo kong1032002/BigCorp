@@ -1,7 +1,7 @@
 ﻿using BigCorp.Models;
 using Microsoft.AspNetCore.Identity;
 
-namespace BigCorp.Repository
+namespace BigCorp.Repository.Interface
 {
     public interface IAccountRepository
     {

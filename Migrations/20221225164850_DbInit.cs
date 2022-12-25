@@ -6,16 +6,11 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace BigCorp.Migrations
 {
     /// <inheritdoc />
-    public partial class AddIdentityAuthetication : Migration
+    public partial class DbInit : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.RenameColumn(
-                name: "warrantyTime",
-                table: "Stock",
-                newName: "exp");
-
             migrationBuilder.CreateTable(
                 name: "AspNetRoles",
                 columns: table => new
@@ -55,6 +50,37 @@ namespace BigCorp.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_AspNetUsers", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ProductLine",
+                columns: table => new
+                {
+                    id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    name = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    description = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    version = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ProductLine", x => x.id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Stock",
+                columns: table => new
+                {
+                    id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    exp = table.Column<int>(type: "int", nullable: false),
+                    factory = table.Column<int>(type: "int", nullable: false),
+                    mfg = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    productLine = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Stock", x => x.id);
                 });
 
             migrationBuilder.CreateTable(
@@ -163,6 +189,34 @@ namespace BigCorp.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "Product",
+                columns: table => new
+                {
+                    id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    ProductLineid = table.Column<int>(type: "int", nullable: false),
+                    Stockid = table.Column<int>(type: "int", nullable: false),
+                    name = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    status = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Product", x => x.id);
+                    table.ForeignKey(
+                        name: "FK_Product_ProductLine_ProductLineid",
+                        column: x => x.ProductLineid,
+                        principalTable: "ProductLine",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Product_Stock_Stockid",
+                        column: x => x.Stockid,
+                        principalTable: "Stock",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
                 table: "AspNetRoleClaims",
@@ -201,6 +255,16 @@ namespace BigCorp.Migrations
                 column: "NormalizedUserName",
                 unique: true,
                 filter: "[NormalizedUserName] IS NOT NULL");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Product_ProductLineid",
+                table: "Product",
+                column: "ProductLineid");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Product_Stockid",
+                table: "Product",
+                column: "Stockid");
         }
 
         /// <inheritdoc />
@@ -222,15 +286,19 @@ namespace BigCorp.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
+                name: "Product");
+
+            migrationBuilder.DropTable(
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");
 
-            migrationBuilder.RenameColumn(
-                name: "exp",
-                table: "Stock",
-                newName: "warrantyTime");
+            migrationBuilder.DropTable(
+                name: "ProductLine");
+
+            migrationBuilder.DropTable(
+                name: "Stock");
         }
     }
 }

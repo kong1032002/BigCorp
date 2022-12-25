@@ -1,5 +1,7 @@
 using BigCorp.Datas;
+using BigCorp.Models;
 using BigCorp.Repository;
+using BigCorp.Repository.Interface;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -28,9 +30,9 @@ builder.Services.AddDbContext<BigCorpContext>(
 // Repository
 builder.Services.AddAutoMapper(typeof(Program));
 builder.Services.AddScoped<IAccountRepository, AccountRepository>();
-builder.Services.AddScoped<IProductRepository, ProductRepository>();
-builder.Services.AddScoped<IProductLineRepository, ProductLineRepository>();
-builder.Services.AddScoped<IStockRepository, StockRepository>();
+builder.Services.AddScoped<IItemRepository<ProductModel>, ProductRepository>();
+builder.Services.AddScoped<IItemRepository<ProductLineModel>, ProductLineRepository>();
+builder.Services.AddScoped<IItemRepository<StockModel>, StockRepository>();
 
 // Authetication
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>().AddEntityFrameworkStores<BigCorpContext>().AddDefaultTokenProviders();

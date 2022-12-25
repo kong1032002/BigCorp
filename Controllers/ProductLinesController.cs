@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using BigCorp.Datas;
 using BigCorp.Repository;
 using BigCorp.Models;
+using BigCorp.Repository.Interface;
 
 namespace BigCorp.Controllers
 {
@@ -16,14 +17,14 @@ namespace BigCorp.Controllers
     public class ProductLinesController : ControllerBase
     {
         //private readonly BigCorpContext _context;
-        private readonly IProductLineRepository _productLineRepo;
+        private readonly IItemRepository<ProductLineModel> _productLineRepo;
 
         //public ProductLinesController(BigCorpContext context)
         //{
         //    _context = context;
         //}
 
-        public ProductLinesController(IProductLineRepository productLineRepo)
+        public ProductLinesController(IItemRepository<ProductLineModel> productLineRepo)
         {
             _productLineRepo = productLineRepo;
         }
@@ -35,7 +36,7 @@ namespace BigCorp.Controllers
         {
             try
             {
-                return Ok(await _productLineRepo.getProductLinesAsync());
+                return Ok(await _productLineRepo.GetAllAsync());
             } catch (Exception ex)
             {
                 return BadRequest(ex.Message);
@@ -47,7 +48,7 @@ namespace BigCorp.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<ProductLine>> GetProductLine(int id)
         {
-            var productLine = await _productLineRepo.getProductLineAsync(id);
+            var productLine = await _productLineRepo.GetItemAsync(id);
             return productLine == null ? NotFound() : Ok(productLine);
             //var productLine = await _context.ProductLines.FindAsync(id);
 
@@ -64,7 +65,7 @@ namespace BigCorp.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> PutProductLine(int id, ProductLineModel model)
         {
-            await _productLineRepo.updateProductLineAsync(id, model);
+            await _productLineRepo.UpdateItemAsync(id, model);
             return Ok();
             //if (id != productLine.id)
             //{
@@ -99,8 +100,8 @@ namespace BigCorp.Controllers
         {
             try
             {
-                var newProductLineId = await _productLineRepo.addProductLineAsync(model);
-                var productLine = await _productLineRepo.getProductLineAsync(newProductLineId);
+                var newProductLineId = await _productLineRepo.AddItemAsync(model);
+                var productLine = await _productLineRepo.GetItemAsync(newProductLineId);
                 return model == null ? NotFound() : Ok(model);
             }
             catch (Exception ex)
@@ -127,7 +128,7 @@ namespace BigCorp.Controllers
             //await _context.SaveChangesAsync();
 
             //return NoContent();
-            await _productLineRepo.deleteProductLineAsync(id);
+            await _productLineRepo.RemoveItemAsync(id);
             return Ok();
         }
 

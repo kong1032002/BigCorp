@@ -1,11 +1,12 @@
 ﻿using AutoMapper;
 using BigCorp.Datas;
 using BigCorp.Models;
+using BigCorp.Repository.Interface;
 using Microsoft.EntityFrameworkCore;
 
 namespace BigCorp.Repository
 {
-    public class StockRepository : IStockRepository
+    public class StockRepository : IItemRepository<StockModel>
     {
         private readonly IMapper _mapper;
         private readonly BigCorpContext _context;
@@ -16,7 +17,7 @@ namespace BigCorp.Repository
             _context = context;
         }
 
-        public async Task<int> addStockAsync(StockModel model)
+        public async Task<int> AddItemAsync(StockModel model)
         {
             var newStock = _mapper.Map<Stock>(model);
             _context.Stocks.Add(newStock);
@@ -25,7 +26,7 @@ namespace BigCorp.Repository
 
         }
 
-        public async Task deleteStockAsync(int id)
+        public async Task RemoveItemAsync(int id)
         {
             var deleteStock = _context.Stocks!.SingleOrDefault(b => b.id == id);
             if (deleteStock != null)
@@ -35,19 +36,19 @@ namespace BigCorp.Repository
             }
         }
 
-        public async Task<StockModel> getStockAsync(int id)
+        public async Task<StockModel> GetItemAsync(int id)
         {
             var stock = await _context.Stocks!.FindAsync(id);
             return _mapper.Map<StockModel>(stock);
         }
 
-        public async Task<List<StockModel>> getStocksAsync()
+        public async Task<List<StockModel>> GetAllAsync()
         {
             var stocks = await _context.Stocks!.ToListAsync();
             return _mapper.Map<List<StockModel>>(stocks);
         }
 
-        public async Task updateStockAsync(int id, StockModel model)
+        public async Task UpdateItemAsync(int id, StockModel model)
         {
             if(id == model.id)
             {
