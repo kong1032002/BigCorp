@@ -8,6 +8,6 @@ namespace BigCorp.Repository.Interface
         public Task<ProductLineModel> getProductLineAsync(int id);
         public Task<int> addProductLineAsync(ProductLineModel model);
         public Task updateProductLineAsync(int id, ProductLineModel model);
-        public Task deleteProductLineAsync(int id);
+        public Task removeStorageLineAsync(int id);
     }
 }

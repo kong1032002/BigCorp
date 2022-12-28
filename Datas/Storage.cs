@@ -1,12 +1,15 @@
 ﻿using Microsoft.Build.Framework;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace BigCorp.Datas
 {
+    [Table("Storage")]
     public class Storage
     {
-        [Required]
+        [Key]
+        public int id { get; set; }
         public ApplicationUser user { get; set; }
-        [Required]
         public Product product { get; set; }
     }
 }

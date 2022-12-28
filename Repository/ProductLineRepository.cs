@@ -27,10 +27,10 @@ namespace BigCorp.Repository
 
         public async Task RemoveItemAsync(int id)
         {
-            var deleteProductLine = _context.ProductLines!.SingleOrDefault(b => b.id == id);
-            if (deleteProductLine != null)
+            var removeStorageLine = _context.ProductLines!.SingleOrDefault(b => b.id == id);
+            if (removeStorageLine != null)
             {
-                _context.ProductLines.Remove(deleteProductLine);
+                _context.ProductLines.Remove(removeStorageLine);
                 await _context.SaveChangesAsync();
             }
         }

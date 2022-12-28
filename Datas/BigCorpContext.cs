@@ -11,6 +11,7 @@ namespace BigCorp.Datas
         public DbSet<Product> Products { get; set; }
         public DbSet<ProductLine> ProductLines { get; set; }
         public DbSet<Stock> Stocks { get; set; }
+        public DbSet<Storage> Storages { get; set; }
         #endregion
     }
 }

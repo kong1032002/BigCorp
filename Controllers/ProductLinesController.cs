@@ -116,7 +116,7 @@ namespace BigCorp.Controllers
 
         // DELETE: api/ProductLines/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteProductLine(int id)
+        public async Task<IActionResult> removeStorageLine(int id)
         {
             //var productLine = await _context.ProductLines.FindAsync(id);
             //if (productLine == null)

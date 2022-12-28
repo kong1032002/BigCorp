@@ -10,6 +10,7 @@ namespace BigCorp.Helpers
             CreateMap<Product, ProductModel>().ReverseMap();
             CreateMap<ProductLine, ProductLineModel>().ReverseMap();
             CreateMap<Stock, StockModel>().ReverseMap();
+            CreateMap<Storage, StorageModel>().ReverseMap();
         }
     }
 }

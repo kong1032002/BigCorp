@@ -103,23 +103,23 @@ namespace BigCorp.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("id"));
 
-                    b.Property<int>("ProductLineid")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Stockid")
-                        .HasColumnType("int");
-
                     b.Property<string>("name")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("productLineid")
+                        .HasColumnType("int");
 
                     b.Property<int>("status")
                         .HasColumnType("int");
 
+                    b.Property<int>("stockid")
+                        .HasColumnType("int");
+
                     b.HasKey("id");
 
-                    b.HasIndex("ProductLineid");
+                    b.HasIndex("productLineid");
 
-                    b.HasIndex("Stockid");
+                    b.HasIndex("stockid");
 
                     b.ToTable("Product");
                 });
@@ -306,21 +306,21 @@ namespace BigCorp.Migrations
 
             modelBuilder.Entity("BigCorp.Datas.Product", b =>
                 {
-                    b.HasOne("BigCorp.Datas.ProductLine", "ProductLine")
+                    b.HasOne("BigCorp.Datas.ProductLine", "productLine")
                         .WithMany()
-                        .HasForeignKey("ProductLineid")
+                        .HasForeignKey("productLineid")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("BigCorp.Datas.Stock", "Stock")
+                    b.HasOne("BigCorp.Datas.Stock", "stock")
                         .WithMany()
-                        .HasForeignKey("Stockid")
+                        .HasForeignKey("stockid")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("ProductLine");
+                    b.Navigation("productLine");
 
-                    b.Navigation("Stock");
+                    b.Navigation("stock");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

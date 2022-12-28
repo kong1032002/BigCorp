@@ -35,10 +35,10 @@ namespace BigCorp.Repository
 
         public async Task RemoveItemAsync(int id)
         {
-            var deleteProduct = _context.Products!.SingleOrDefault(b=> b.id == id);
-            if(deleteProduct != null)
+            var removeStorage = _context.Products!.SingleOrDefault(b=> b.id == id);
+            if(removeStorage != null)
             {
-                _context.Products!.Remove(deleteProduct);
+                _context.Products!.Remove(removeStorage);
                 await _context.SaveChangesAsync();
             }
         }

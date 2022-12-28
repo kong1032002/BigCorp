@@ -33,6 +33,8 @@ builder.Services.AddScoped<IAccountRepository, AccountRepository>();
 builder.Services.AddScoped<IItemRepository<ProductModel>, ProductRepository>();
 builder.Services.AddScoped<IItemRepository<ProductLineModel>, ProductLineRepository>();
 builder.Services.AddScoped<IItemRepository<StockModel>, StockRepository>();
+builder.Services.AddScoped<IItemRepository<StorageModel>, StorageRepository>();
+
 
 // Authetication
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>().AddEntityFrameworkStores<BigCorpContext>().AddDefaultTokenProviders();

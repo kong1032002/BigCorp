@@ -62,7 +62,7 @@ namespace BigCorp.Controllers
             {
                 var newProductId = await _productRepo.AddItemAsync(model);
                 var product = await _productRepo.GetItemAsync(newProductId);
-                return model == null ? NotFound() : Ok(model);
+                return product == null ? NotFound() : Ok(model);
             } catch (Exception ex) { 
                 return BadRequest(ex.Message);
             }
@@ -70,7 +70,7 @@ namespace BigCorp.Controllers
 
         // DELETE: api/Products/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteProduct(int id)
+        public async Task<IActionResult> removeStorage(int id)
         {
             await _productRepo.RemoveItemAsync(id);
             return Ok();
