@@ -1,6 +1,5 @@
 ﻿using BigCorp.Models;
 using BigCorp.Repository.Interface;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BigCorp.Controllers
@@ -18,7 +17,7 @@ namespace BigCorp.Controllers
         public async Task<IActionResult> SignUp(SignUpModel model)
         {
             var result = await _repo.SignUpAsync(model);
-            if(result.Succeeded)
+            if (result.Succeeded)
             {
                 return Ok(result.Succeeded);
             }

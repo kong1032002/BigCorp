@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
+﻿using BigCorp.Datas;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using BigCorp.Datas;
-using BigCorp.Models;
 
 namespace BigCorp.Controllers
 {
@@ -77,9 +71,10 @@ namespace BigCorp.Controllers
         // POST: api/Products
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Product>> PostProduct(Product product)
+        public async Task<ActionResult<Product>> PostProduct(int productLineId)
         {
-            var productLine = await _context.ProductLines.FindAsync(product.ProductLineId);
+            var product = new Product();
+            var productLine = await _context.ProductLines.FindAsync(productLineId);
             if (productLine == null)
                 return BadRequest("ProductLine khong ton tai");
             product.ProductLine = productLine;
@@ -122,8 +117,8 @@ namespace BigCorp.Controllers
         public async Task<IActionResult> Sell(int id)
         {
             var product = await _context.Products.FindAsync(id);
-            if(product == null)
-                    return NotFound();
+            if (product == null)
+                return NotFound();
             if (product.Status == "Da ban")
                 return BadRequest("San pham da ban");
             product.Status = "Da ban";
@@ -141,11 +136,11 @@ namespace BigCorp.Controllers
                 return NotFound();
             if (product.Status == "Moi")
                 return BadRequest("San pham chuan can bao duong");
-            if(product.Exp < DateTime.Now)
+            if (product.Exp < DateTime.Now)
             {
                 await DeleteProduct(id);
                 return BadRequest("San pham het han bao hanh");
-            }    
+            }
             product.Status = "Dang bao hanh";
             _context.Entry(product).State = EntityState.Modified;
             await _context.SaveChangesAsync();

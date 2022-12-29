@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BigCorp.Migrations
 {
     [DbContext(typeof(BigCorpContext))]
-    [Migration("20221229192136_MIG_V1")]
-    partial class MIGV1
+    [Migration("20221229215711_MIG_v1")]
+    partial class MIGv1
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -145,7 +145,7 @@ namespace BigCorp.Migrations
                     b.Property<DateTime>("Mfg")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("ProductLineId")
+                    b.Property<int?>("ProductLineId")
                         .HasColumnType("int");
 
                     b.Property<string>("Status")
@@ -180,6 +180,27 @@ namespace BigCorp.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("ProductLines");
+                });
+
+            modelBuilder.Entity("BigCorp.Datas.Storage", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Address")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Type")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Storage");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<int>", b =>
@@ -289,9 +310,7 @@ namespace BigCorp.Migrations
                 {
                     b.HasOne("BigCorp.Datas.ProductLine", "ProductLine")
                         .WithMany()
-                        .HasForeignKey("ProductLineId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("ProductLineId");
 
                     b.Navigation("ProductLine");
                 });

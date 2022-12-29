@@ -1,5 +1,4 @@
-﻿using BigCorp.Datas;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace BigCorp.Models
 {

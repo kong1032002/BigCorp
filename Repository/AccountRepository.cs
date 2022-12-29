@@ -24,7 +24,7 @@ namespace BigCorp.Repository
         public async Task<string> SignInAsync(SignInModel model)
         {
             var result = await _signInManager.PasswordSignInAsync(model.Email, model.Password, false, false);
-            if(!result.Succeeded)
+            if (!result.Succeeded)
             {
                 return string.Empty;
             }
@@ -45,7 +45,7 @@ namespace BigCorp.Repository
                 );
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
-        
+
         public async Task<IdentityResult> SignUpAsync(SignUpModel model)
         {
             var user = new AppUser

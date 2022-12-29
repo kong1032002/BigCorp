@@ -1,5 +1,4 @@
 using BigCorp.Datas;
-using BigCorp.Models;
 using BigCorp.Repository;
 using BigCorp.Repository.Interface;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -16,7 +15,8 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen(opts => {
+builder.Services.AddSwaggerGen(opts =>
+{
     opts.SwaggerDoc("v1", new OpenApiInfo { Title = "Swagger Sollution", Version = "v1" });
     opts.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {

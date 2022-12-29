@@ -1,6 +1,4 @@
-﻿using BigCorp.Datas;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations.Schema;
 
 namespace BigCorp.Models
 {
@@ -8,7 +6,7 @@ namespace BigCorp.Models
     {
         public string Status { get; set; } = "Moi";
         [DatabaseGenerated(DatabaseGeneratedOption.None)]
-        public int ?ProductLineId { get; set; }
+        public int? ProductLineId { get; set; }
         public DateTime Exp { get; set; } = DateTime.Now.AddMonths(24);
         public DateTime Mfg { get; set; } = DateTime.Now;
     }

@@ -1,6 +1,6 @@
 ﻿namespace BigCorp.Repository.Interface
 {
-    public interface IItemRepository<V,T>
+    public interface IItemRepository<V, T>
     {
         public Task<T> GetItemAsync(int id);
         public Task<List<T>> GetAllAsync();

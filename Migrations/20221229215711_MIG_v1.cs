@@ -1,12 +1,11 @@
-﻿using System;
-using Microsoft.EntityFrameworkCore.Migrations;
+﻿using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
 namespace BigCorp.Migrations
 {
     /// <inheritdoc />
-    public partial class MIGV1 : Migration
+    public partial class MIGv1 : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -67,6 +66,20 @@ namespace BigCorp.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_ProductLines", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Storage",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Type = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Address = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Storage", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -182,7 +195,7 @@ namespace BigCorp.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Status = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    ProductLineId = table.Column<int>(type: "int", nullable: false),
+                    ProductLineId = table.Column<int>(type: "int", nullable: true),
                     Exp = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Mfg = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
@@ -193,8 +206,7 @@ namespace BigCorp.Migrations
                         name: "FK_Products_ProductLines_ProductLineId",
                         column: x => x.ProductLineId,
                         principalTable: "ProductLines",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateIndex(
@@ -262,6 +274,9 @@ namespace BigCorp.Migrations
 
             migrationBuilder.DropTable(
                 name: "Products");
+
+            migrationBuilder.DropTable(
+                name: "Storage");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
