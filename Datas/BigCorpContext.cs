@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using BigCorp.Datas;
 
 namespace BigCorp.Datas
 {
@@ -10,7 +11,13 @@ namespace BigCorp.Datas
         #region DBset
         public DbSet<Product> Products { get; set; }
         public DbSet<ProductLine> ProductLines { get; set; }
-        public DbSet<Stock> Stocks { get; set; }
+        public DbSet<Storage> Storage { get; set; }
         #endregion
+
+        protected override void OnModelCreating(ModelBuilder builder)
+        {
+            base.OnModelCreating(builder);
+        }
+
     }
 }

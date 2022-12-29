@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace BigCorp.Migrations
 {
     /// <inheritdoc />
-    public partial class Mi1 : Migration
+    public partial class MIGV1 : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -176,49 +176,23 @@ namespace BigCorp.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Stock",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    StorageId = table.Column<int>(type: "int", nullable: false),
-                    ProductLineId = table.Column<int>(type: "int", nullable: false),
-                    Mfg = table.Column<DateTime>(type: "datetime2", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Stock", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Stock_AspNetUsers_StorageId",
-                        column: x => x.StorageId,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_Stock_ProductLines_ProductLineId",
-                        column: x => x.ProductLineId,
-                        principalTable: "ProductLines",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Products",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    StockId = table.Column<int>(type: "int", nullable: false),
                     Status = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Exp = table.Column<DateTime>(type: "datetime2", nullable: false)
+                    ProductLineId = table.Column<int>(type: "int", nullable: false),
+                    Exp = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Mfg = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Products", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Products_Stock_StockId",
-                        column: x => x.StockId,
-                        principalTable: "Stock",
+                        name: "FK_Products_ProductLines_ProductLineId",
+                        column: x => x.ProductLineId,
+                        principalTable: "ProductLines",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -263,19 +237,9 @@ namespace BigCorp.Migrations
                 filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Products_StockId",
+                name: "IX_Products_ProductLineId",
                 table: "Products",
-                column: "StockId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Stock_ProductLineId",
-                table: "Stock",
                 column: "ProductLineId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Stock_StorageId",
-                table: "Stock",
-                column: "StorageId");
         }
 
         /// <inheritdoc />
@@ -301,9 +265,6 @@ namespace BigCorp.Migrations
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
-
-            migrationBuilder.DropTable(
-                name: "Stock");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");

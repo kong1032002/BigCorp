@@ -1,15 +1,15 @@
 ﻿using BigCorp.Datas;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace BigCorp.Models
 {
     public class ProductModel
     {
-        [Required]
-        public int Id { get; set; }
-        [Required]
-        public int? StockId { get; set; } = 0;
         public string Status { get; set; } = "Moi";
-        public string Exp { get; set; }
+        [DatabaseGenerated(DatabaseGeneratedOption.None)]
+        public int ?ProductLineId { get; set; }
+        public DateTime Exp { get; set; } = DateTime.Now.AddMonths(24);
+        public DateTime Mfg { get; set; } = DateTime.Now;
     }
 }

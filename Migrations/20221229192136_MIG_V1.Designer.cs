@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BigCorp.Migrations
 {
     [DbContext(typeof(BigCorpContext))]
-    [Migration("20221229161342_Mi1")]
-    partial class Mi1
+    [Migration("20221229192136_MIG_V1")]
+    partial class MIGV1
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -142,17 +142,19 @@ namespace BigCorp.Migrations
                     b.Property<DateTime>("Exp")
                         .HasColumnType("datetime2");
 
+                    b.Property<DateTime>("Mfg")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("ProductLineId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Status")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("StockId")
-                        .IsRequired()
-                        .HasColumnType("int");
-
                     b.HasKey("Id");
 
-                    b.HasIndex("StockId");
+                    b.HasIndex("ProductLineId");
 
                     b.ToTable("Products");
                 });
@@ -178,32 +180,6 @@ namespace BigCorp.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("ProductLines");
-                });
-
-            modelBuilder.Entity("BigCorp.Datas.Stock", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTime>("Mfg")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("ProductLineId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("StorageId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ProductLineId");
-
-                    b.HasIndex("StorageId");
-
-                    b.ToTable("Stock");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<int>", b =>
@@ -311,32 +287,13 @@ namespace BigCorp.Migrations
 
             modelBuilder.Entity("BigCorp.Datas.Product", b =>
                 {
-                    b.HasOne("BigCorp.Datas.Stock", "Stock")
-                        .WithMany()
-                        .HasForeignKey("StockId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Stock");
-                });
-
-            modelBuilder.Entity("BigCorp.Datas.Stock", b =>
-                {
                     b.HasOne("BigCorp.Datas.ProductLine", "ProductLine")
                         .WithMany()
                         .HasForeignKey("ProductLineId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("BigCorp.Datas.AppUser", "Storage")
-                        .WithMany()
-                        .HasForeignKey("StorageId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.Navigation("ProductLine");
-
-                    b.Navigation("Storage");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<int>", b =>

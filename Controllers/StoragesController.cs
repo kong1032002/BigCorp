@@ -11,47 +11,47 @@ namespace BigCorp.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class ProductLinesController : ControllerBase
+    public class StoragesController : ControllerBase
     {
         private readonly BigCorpContext _context;
 
-        public ProductLinesController(BigCorpContext context)
+        public StoragesController(BigCorpContext context)
         {
             _context = context;
         }
 
-        // GET: api/ProductLines
+        // GET: api/Storages
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<ProductLine>>> GetProductLines()
+        public async Task<ActionResult<IEnumerable<Storage>>> GetStorage()
         {
-            return await _context.ProductLines.ToListAsync();
+            return await _context.Storage.ToListAsync();
         }
 
-        // GET: api/ProductLines/5
+        // GET: api/Storages/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<ProductLine>> GetProductLine(int id)
+        public async Task<ActionResult<Storage>> GetStorage(int id)
         {
-            var productLine = await _context.ProductLines.FindAsync(id);
+            var storage = await _context.Storage.FindAsync(id);
 
-            if (productLine == null)
+            if (storage == null)
             {
                 return NotFound();
             }
 
-            return productLine;
+            return storage;
         }
 
-        // PUT: api/ProductLines/5
+        // PUT: api/Storages/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutProductLine(int id, ProductLine productLine)
+        public async Task<IActionResult> PutStorage(int id, Storage storage)
         {
-            if (id != productLine.Id)
+            if (id != storage.Id)
             {
                 return BadRequest();
             }
 
-            _context.Entry(productLine).State = EntityState.Modified;
+            _context.Entry(storage).State = EntityState.Modified;
 
             try
             {
@@ -59,7 +59,7 @@ namespace BigCorp.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!ProductLineExists(id))
+                if (!StorageExists(id))
                 {
                     return NotFound();
                 }
@@ -72,36 +72,36 @@ namespace BigCorp.Controllers
             return NoContent();
         }
 
-        // POST: api/ProductLines
+        // POST: api/Storages
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<ProductLine>> PostProductLine(ProductLine productLine)
+        public async Task<ActionResult<Storage>> PostStorage(Storage storage)
         {
-            _context.ProductLines.Add(productLine);
+            _context.Storage.Add(storage);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetProductLine", new { id = productLine.Id }, productLine);
+            return CreatedAtAction("GetStorage", new { id = storage.Id }, storage);
         }
 
-        // DELETE: api/ProductLines/5
+        // DELETE: api/Storages/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteProductLine(int id)
+        public async Task<IActionResult> DeleteStorage(int id)
         {
-            var productLine = await _context.ProductLines.FindAsync(id);
-            if (productLine == null)
+            var storage = await _context.Storage.FindAsync(id);
+            if (storage == null)
             {
                 return NotFound();
             }
 
-            _context.ProductLines.Remove(productLine);
+            _context.Storage.Remove(storage);
             await _context.SaveChangesAsync();
 
             return NoContent();
         }
 
-        private bool ProductLineExists(int id)
+        private bool StorageExists(int id)
         {
-            return _context.ProductLines.Any(e => e.Id == id);
+            return _context.Storage.Any(e => e.Id == id);
         }
     }
 }

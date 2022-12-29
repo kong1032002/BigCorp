@@ -9,7 +9,6 @@ namespace BigCorp.Helpers
         public ApplicationMapper() {
             CreateMap<Product, ProductModel>().ReverseMap();
             CreateMap<ProductLine, ProductLineModel>().ReverseMap();
-            CreateMap<Stock, StockModel>().ReverseMap();
         }
     }
 }
