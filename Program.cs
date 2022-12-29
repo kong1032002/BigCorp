@@ -30,14 +30,12 @@ builder.Services.AddDbContext<BigCorpContext>(
 // Repository
 builder.Services.AddAutoMapper(typeof(Program));
 builder.Services.AddScoped<IAccountRepository, AccountRepository>();
-builder.Services.AddScoped<IItemRepository<ProductModel>, ProductRepository>();
-builder.Services.AddScoped<IItemRepository<ProductLineModel>, ProductLineRepository>();
-builder.Services.AddScoped<IItemRepository<StockModel>, StockRepository>();
-builder.Services.AddScoped<IItemRepository<StorageModel>, StorageRepository>();
-
-
-// Authetication
-builder.Services.AddIdentity<ApplicationUser, IdentityRole>().AddEntityFrameworkStores<BigCorpContext>().AddDefaultTokenProviders();
+builder.Services.AddScoped<IItemRepository<ProductModel, Product>, ProductRepository>();
+builder.Services.AddScoped<IItemRepository<ProductLineModel, ProductLine>, ProductLineRepository>();
+builder.Services.AddScoped<IItemRepository<StockModel, Stock>, StockRepository>();
+builder.Services.AddTransient<RoleManager<AppRole>, RoleManager<AppRole>>();
+builder.Services.AddTransient<SignInManager<AppUser>, SignInManager<AppUser>>();
+builder.Services.AddIdentity<AppUser, AppRole>().AddEntityFrameworkStores<BigCorpContext>().AddDefaultTokenProviders();
 
 builder.Services.AddAuthentication(options =>
 {

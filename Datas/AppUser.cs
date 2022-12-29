@@ -2,7 +2,7 @@
 
 namespace BigCorp.Datas
 {
-    public class ApplicationUser : IdentityUser
+    public class AppUser : IdentityUser<int>
     {
         public string Name { get; set; } = string.Empty;
         //public string lastName { get; set; } = string.Empty;

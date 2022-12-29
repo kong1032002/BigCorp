@@ -15,9 +15,9 @@ namespace BigCorp.Controllers
     [ApiController]
     public class ProductsController : ControllerBase
     {
-        private readonly IItemRepository<ProductModel> _productRepo;
+        private readonly IItemRepository<ProductModel, Product> _productRepo;
 
-        public ProductsController(IItemRepository<ProductModel> productRepo)
+        public ProductsController(IItemRepository<ProductModel, Product> productRepo)
         {
             _productRepo = productRepo;
         }
@@ -26,21 +26,14 @@ namespace BigCorp.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Product>>> GetProducts()
         {
-            try
-            {
-                return Ok(await _productRepo.GetAllAsync());
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
+            return await _productRepo.GetAllAsync();
         }
 
         // GET: api/Products/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Product>> GetProduct(int id)
         {
-            var product = await _productRepo.GetItemAsync(id);
+            var product = _productRepo.GetItemAsync(id);
             return product == null ? NotFound() : Ok(product);
         }
 
@@ -49,8 +42,28 @@ namespace BigCorp.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> PutProduct(int id, ProductModel model)
         {
-            await _productRepo.UpdateItemAsync(id, model);
-            return Ok();
+            if (id != model.Id)
+            {
+                return BadRequest();
+            }
+
+            try
+            {
+                await _productRepo.UpdateItemAsync(id, model);
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!ProductExists(id))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+
+            return NoContent();
         }
 
         // POST: api/Products
@@ -58,27 +71,28 @@ namespace BigCorp.Controllers
         [HttpPost]
         public async Task<ActionResult> PostProduct(ProductModel model)
         {
-            try
-            {
-                var newProductId = await _productRepo.AddItemAsync(model);
-                var product = await _productRepo.GetItemAsync(newProductId);
-                return product == null ? NotFound() : Ok(model);
-            } catch (Exception ex) { 
-                return BadRequest(ex.Message);
-            }
+            await _productRepo.AddItemAsync(model);
+            return CreatedAtAction("GetProduct", new { id = model.Id }, model);
         }
 
         // DELETE: api/Products/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> removeStorage(int id)
         {
-            await _productRepo.RemoveItemAsync(id);
-            return Ok();
+            try
+            {
+                await _productRepo.RemoveItemAsync(id);
+            }
+            catch (Exception ex)
+            {
+                return NotFound();
+            }
+            return NoContent();
         }
 
-        //private bool ProductExists(int id)
-        //{
-        //    return _context.Products.Any(e => e.id == id);
-        //}
+        private bool ProductExists(int id)
+        {
+            return _productRepo.ItemExists(id);
+        }
     }
 }

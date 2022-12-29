@@ -15,9 +15,9 @@ namespace BigCorp.Controllers
     [ApiController]
     public class StocksController : ControllerBase
     {
-        private readonly IItemRepository<StockModel> _stockRepo;
+        private readonly IItemRepository<StockModel, Stock> _stockRepo;
 
-        public StocksController(IItemRepository<StockModel> stockRepo)
+        public StocksController(IItemRepository<StockModel, Stock> stockRepo)
         {
             _stockRepo = stockRepo;
         }
@@ -26,14 +26,7 @@ namespace BigCorp.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Stock>>> GetStocks()
         {
-            try
-            {
-                return Ok(await _stockRepo.GetAllAsync());
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
+            return await _stockRepo.GetAllAsync();
         }
 
         // GET: api/Stocks/5
@@ -42,14 +35,6 @@ namespace BigCorp.Controllers
         {
             var stock = await _stockRepo.GetItemAsync(id);
             return stock == null ? NotFound() : Ok(stock);
-            //var stock = await _context.Stocks.FindAsync(id);
-
-            //if (stock == null)
-            //{
-            //    return NotFound();
-            //}
-
-            //return stock;
         }
 
         // PUT: api/Stocks/5
@@ -57,32 +42,28 @@ namespace BigCorp.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> PutStock(int id, StockModel model)
         {
-            await _stockRepo.UpdateItemAsync(id, model);
-            return Ok();
-            //if (id != stock.id)
-            //{
-            //    return BadRequest();
-            //}
+            if (id != model.Id)
+            {
+                return BadRequest();
+            }
 
-            //_context.Entry(stock).State = EntityState.Modified;
+            try
+            {
+                await _stockRepo.UpdateItemAsync(id, model);
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!StockExists(id))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
 
-            //try
-            //{
-            //    await _context.SaveChangesAsync();
-            //}
-            //catch (DbUpdateConcurrencyException)
-            //{
-            //    if (!StockExists(id))
-            //    {
-            //        return NotFound();
-            //    }
-            //    else
-            //    {
-            //        throw;
-            //    }
-            //}
-
-            //return NoContent();
+            return NoContent();
         }
 
         // POST: api/Stocks
@@ -90,43 +71,28 @@ namespace BigCorp.Controllers
         [HttpPost]
         public async Task<ActionResult<Stock>> PostStock(StockModel model)
         {
-            try
-            {
-                var newStockId = await _stockRepo.AddItemAsync(model);
-                var product = await _stockRepo.GetItemAsync(newStockId);
-                return model == null ? NotFound() : Ok(model);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
-            //_context.Stocks.Add(stock);
-            //await _context.SaveChangesAsync();
-
-            //return CreatedAtAction("GetStock", new { id = stock.id }, stock);
+            await _stockRepo.AddItemAsync(model);
+            return CreatedAtAction("GetStock", new { id = model.Id }, model);
         }
 
         // DELETE: api/Stocks/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteStock(int id)
         {
-            await _stockRepo.RemoveItemAsync(id);
-            return Ok();
-            //var stock = await _context.Stocks.FindAsync(id);
-            //if (stock == null)
-            //{
-            //    return NotFound();
-            //}
-
-            //_context.Stocks.Remove(stock);
-            //await _context.SaveChangesAsync();
-
-            //return NoContent();
+            try
+            {
+                await _stockRepo.RemoveItemAsync(id);
+            }
+            catch (Exception ex)
+            {
+                return NotFound();
+            }
+            return NoContent();
         }
 
-        //private bool StockExists(int id)
-        //{
-        //    return _context.Stocks.Any(e => e.id == id);
-        //}
+        private bool StockExists(int id)
+        {
+            return _stockRepo.ItemExists(id);
+        }
     }
 }

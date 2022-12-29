@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace BigCorp.Repository
 {
-    public class StockRepository : IItemRepository<StockModel>
+    public class StockRepository : IItemRepository<StockModel, Stock>
     {
         private readonly IMapper _mapper;
         private readonly BigCorpContext _context;
@@ -17,45 +17,38 @@ namespace BigCorp.Repository
             _context = context;
         }
 
-        public async Task<int> AddItemAsync(StockModel model)
+        public async Task AddItemAsync(StockModel model)
         {
-            var newStock = _mapper.Map<Stock>(model);
-            _context.Stocks.Add(newStock);
+            var stock = _mapper.Map<Stock>(model);
+            _context.Stocks.Add(stock);
             await _context.SaveChangesAsync();
-            return newStock.id;
-
         }
 
-        public async Task RemoveItemAsync(int id)
+        public async Task RemoveItemAsync(int Id)
         {
-            var deleteStock = _context.Stocks!.SingleOrDefault(b => b.id == id);
-            if (deleteStock != null)
-            {
-                _context.Stocks.Remove(deleteStock);
-                await _context.SaveChangesAsync();
-            }
+            var stock = await GetItemAsync(Id);
+            _context.Stocks.Remove(stock);
+            await _context.SaveChangesAsync();
         }
 
-        public async Task<StockModel> GetItemAsync(int id)
+        public async Task UpdateItemAsync(int Id, StockModel model)
         {
-            var stock = await _context.Stocks!.FindAsync(id);
-            return _mapper.Map<StockModel>(stock);
+            _context.Entry(model).State = EntityState.Modified;
+            await _context.SaveChangesAsync();
+        }
+        public async Task<Stock> GetItemAsync(int Id)
+        {
+            return await _context.Stocks.FindAsync(Id);
         }
 
-        public async Task<List<StockModel>> GetAllAsync()
+        public async Task<List<Stock>> GetAllAsync()
         {
-            var stocks = await _context.Stocks!.ToListAsync();
-            return _mapper.Map<List<StockModel>>(stocks);
+            return await _context.Stocks.ToListAsync();
         }
 
-        public async Task UpdateItemAsync(int id, StockModel model)
+        public bool ItemExists(int id)
         {
-            if(id == model.id)
-            {
-                var updateStock = _mapper.Map<Stock>(model);
-                _context.Stocks!.Update(updateStock);
-                await _context.SaveChangesAsync();
-            }
+            return _context.Stocks.Any(e => e.Id == id);
         }
     }
 }

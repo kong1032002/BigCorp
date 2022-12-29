@@ -3,14 +3,14 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace BigCorp.Datas
 {
-    [Table("ProductLine")]
+    [Table("ProductLines")]
     public class ProductLine
     {
         [Key]
-        public int id { get; set; }
-        public string? name { get; set; }
-        public string? description { get; set; }
-        public int version { get; set; }
+        public int Id { get; set; }
+        public string? Name { get; set; }
+        public string? Description { get; set; }
+        public string Version { get; set; }
 
     }
 }

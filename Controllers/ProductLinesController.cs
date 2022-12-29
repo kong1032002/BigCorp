@@ -17,14 +17,14 @@ namespace BigCorp.Controllers
     public class ProductLinesController : ControllerBase
     {
         //private readonly BigCorpContext _context;
-        private readonly IItemRepository<ProductLineModel> _productLineRepo;
+        private readonly IItemRepository<ProductLineModel, ProductLine> _productLineRepo;
 
         //public ProductLinesController(BigCorpContext context)
         //{
         //    _context = context;
         //}
 
-        public ProductLinesController(IItemRepository<ProductLineModel> productLineRepo)
+        public ProductLinesController(IItemRepository<ProductLineModel, ProductLine> productLineRepo)
         {
             _productLineRepo = productLineRepo;
         }
@@ -34,14 +34,7 @@ namespace BigCorp.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<ProductLine>>> GetProductLines()
         {
-            try
-            {
-                return Ok(await _productLineRepo.GetAllAsync());
-            } catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
-            //return await _context.ProductLines.ToListAsync();
+            return await _productLineRepo.GetAllAsync();
         }
 
         // GET: api/ProductLines/5
@@ -50,14 +43,6 @@ namespace BigCorp.Controllers
         {
             var productLine = await _productLineRepo.GetItemAsync(id);
             return productLine == null ? NotFound() : Ok(productLine);
-            //var productLine = await _context.ProductLines.FindAsync(id);
-
-            //if (productLine == null)
-            //{
-            //    return NotFound();
-            //}
-
-            //return productLine;
         }
 
         // PUT: api/ProductLines/5
@@ -65,32 +50,27 @@ namespace BigCorp.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> PutProductLine(int id, ProductLineModel model)
         {
-            await _productLineRepo.UpdateItemAsync(id, model);
-            return Ok();
-            //if (id != productLine.id)
-            //{
-            //    return BadRequest();
-            //}
+            if (id != model.Id)
+            {
+                return BadRequest();
+            }
+            try
+            {
+                await _productLineRepo.UpdateItemAsync(id, model);
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!ProductLineExists(id))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
 
-            //_context.Entry(productLine).State = EntityState.Modified;
-
-            //try
-            //{
-            //    await _context.SaveChangesAsync();
-            //}
-            //catch (DbUpdateConcurrencyException)
-            //{
-            //    if (!ProductLineExists(id))
-            //    {
-            //        return NotFound();
-            //    }
-            //    else
-            //    {
-            //        throw;
-            //    }
-            //}
-
-            //return NoContent();
+            return NoContent();
         }
 
         // POST: api/ProductLines
@@ -98,43 +78,28 @@ namespace BigCorp.Controllers
         [HttpPost]
         public async Task<ActionResult<ProductLine>> PostProductLine(ProductLineModel model)
         {
-            try
-            {
-                var newProductLineId = await _productLineRepo.AddItemAsync(model);
-                var productLine = await _productLineRepo.GetItemAsync(newProductLineId);
-                return model == null ? NotFound() : Ok(model);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
-            //_context.ProductLines.Add(productLine);
-            //await _context.SaveChangesAsync();
-
-            //return CreatedAtAction("GetProductLine", new { id = productLine.id }, productLine);
+            await _productLineRepo.AddItemAsync(model);
+            return CreatedAtAction("GetProductLine", new { id = model.Id }, model);
         }
 
         // DELETE: api/ProductLines/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> removeStorageLine(int id)
         {
-            //var productLine = await _context.ProductLines.FindAsync(id);
-            //if (productLine == null)
-            //{
-            //    return NotFound();
-            //}
-
-            //_context.ProductLines.Remove(productLine);
-            //await _context.SaveChangesAsync();
-
-            //return NoContent();
-            await _productLineRepo.RemoveItemAsync(id);
-            return Ok();
+            try
+            {
+                await _productLineRepo.RemoveItemAsync(id);
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                return NotFound();
+            }
         }
 
-        //private bool ProductLineExists(int id)
-        //{
-        //    return _context.ProductLines.Any(e => e.id == id);
-        //}
+        private bool ProductLineExists(int id)
+        {
+            return _productLineRepo.ItemExists(id);
+        }
     }
 }

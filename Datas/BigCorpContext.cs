@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace BigCorp.Datas
 {
-    public class BigCorpContext : IdentityDbContext<ApplicationUser>
+    public class BigCorpContext : IdentityDbContext<AppUser, AppRole, int>
     {
         public BigCorpContext(DbContextOptions<BigCorpContext> opt) : base(opt) { }
 
@@ -11,7 +11,6 @@ namespace BigCorp.Datas
         public DbSet<Product> Products { get; set; }
         public DbSet<ProductLine> ProductLines { get; set; }
         public DbSet<Stock> Stocks { get; set; }
-        public DbSet<Storage> Storages { get; set; }
         #endregion
     }
 }

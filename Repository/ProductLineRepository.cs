@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace BigCorp.Repository
 {
-    public class ProductLineRepository : IItemRepository<ProductLineModel>
+    public class ProductLineRepository : IItemRepository<ProductLineModel,ProductLine>
     {
         private readonly BigCorpContext _context;
         private readonly IMapper _mapper;
@@ -17,44 +17,42 @@ namespace BigCorp.Repository
             _mapper = mapper;
         }
 
-        public async Task<int> AddItemAsync(ProductLineModel model)
+        public async Task AddItemAsync(ProductLineModel model)
         {
             var newProductLine = _mapper.Map<ProductLine>(model);
             _context.ProductLines.Add(newProductLine);
             await _context.SaveChangesAsync();
-            return newProductLine.id;
         }
 
-        public async Task RemoveItemAsync(int id)
+        public async Task RemoveItemAsync(int Id)
         {
-            var removeStorageLine = _context.ProductLines!.SingleOrDefault(b => b.id == id);
-            if (removeStorageLine != null)
+            var productLine = await GetItemAsync(Id);
+            _context.ProductLines.Remove(productLine);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task<ProductLine> GetItemAsync(int Id)
+        {
+            return await _context.ProductLines.FindAsync(Id);
+        }
+
+        public async Task<List<ProductLine>> GetAllAsync()
+        {
+            return await _context.ProductLines.ToListAsync();
+        }
+
+        public async Task UpdateItemAsync(int Id, ProductLineModel model)
+        {
+            if (Id == model.Id)
             {
-                _context.ProductLines.Remove(removeStorageLine);
+                var productLine = _mapper.Map<ProductLine>(model);
+                _context.Entry(productLine).State = EntityState.Modified;
                 await _context.SaveChangesAsync();
             }
         }
-
-        public async Task<ProductLineModel> GetItemAsync(int id)
+        public bool ItemExists(int id)
         {
-            var productLine = await _context.ProductLines!.FindAsync(id);
-            return _mapper.Map<ProductLineModel>(productLine);
-        }
-
-        public async Task<List<ProductLineModel>> GetAllAsync()
-        {
-            var productLines = await _context.ProductLines!.ToListAsync();
-            return _mapper.Map<List<ProductLineModel>>(productLines);
-        }
-
-        public async Task UpdateItemAsync(int id, ProductLineModel model)
-        {
-            if (id == model.id)
-            {
-                var updateProductLine = _mapper.Map<ProductLine>(model);
-                _context.ProductLines!.Update(updateProductLine);
-                await _context.SaveChangesAsync();
-            }
+            return _context.ProductLines.Any(e => e.Id == id);
         }
     }
 }

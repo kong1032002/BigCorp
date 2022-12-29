@@ -11,10 +11,10 @@ namespace BigCorp.Repository
 {
     public class AccountRepository : IAccountRepository
     {
-        private readonly UserManager<ApplicationUser> _userManager;
-        private readonly SignInManager<ApplicationUser> _signInManager;
+        private readonly UserManager<AppUser> _userManager;
+        private readonly SignInManager<AppUser> _signInManager;
         private readonly IConfiguration _configuration;
-        public AccountRepository(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, IConfiguration configuration)
+        public AccountRepository(UserManager<AppUser> userManager, SignInManager<AppUser> signInManager, IConfiguration configuration)
         {
             _userManager = userManager;
             _signInManager = signInManager;
@@ -48,7 +48,7 @@ namespace BigCorp.Repository
         
         public async Task<IdentityResult> SignUpAsync(SignUpModel model)
         {
-            var user = new ApplicationUser
+            var user = new AppUser
             {
                 Name = model.Name,
                 Address = model.Address,
