@@ -9,5 +9,6 @@ namespace BigCorp.Models
         public int? ProductLineId { get; set; }
         public DateTime Exp { get; set; } = DateTime.Now.AddMonths(24);
         public DateTime Mfg { get; set; } = DateTime.Now;
+        public string Storage { get; set; }
     }
 }

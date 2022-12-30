@@ -21,7 +21,6 @@ namespace BigCorp.Controllers
         {
             var product = await _context.Products.Include(a => a.ProductLine).ToArrayAsync();
             return product;
-            return await _context.Products.ToListAsync();
         }
 
         // GET: api/Products/5
@@ -71,13 +70,14 @@ namespace BigCorp.Controllers
         // POST: api/Products
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Product>> PostProduct(int productLineId)
+        public async Task<ActionResult<Product>> PostProduct(int productLineId, string Storage)
         {
             var product = new Product();
             var productLine = await _context.ProductLines.FindAsync(productLineId);
             if (productLine == null)
                 return BadRequest("ProductLine khong ton tai");
             product.ProductLine = productLine;
+            product.Storage = Storage;
             _context.Products.Add(product);
             await _context.SaveChangesAsync();
             return CreatedAtAction("GetProduct", new { id = product.Id }, product);
