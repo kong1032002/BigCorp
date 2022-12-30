@@ -4,7 +4,7 @@ namespace BigCorp.Models
 {
     public class ProductModel
     {
-        public string Status { get; set; } = "Moi";
+        public string Status { get; set; } = "Chua ban";
         [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public int? ProductLineId { get; set; }
         public DateTime Exp { get; set; } = DateTime.Now.AddMonths(24);

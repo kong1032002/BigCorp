@@ -113,6 +113,43 @@ namespace BigCorp.Controllers
             return Ok(lst);
         }
 
+        [HttpPut("ChangeStatus/{id}&{status}")]
+        public async Task<IActionResult> ChangeStatus(int id, string status)
+        {
+            var product = await _context.Products.FindAsync(id);
+            if (product == null)
+                return NotFound();
+            product.Status = status;
+            _context.Entry(product).State = EntityState.Modified;
+            await _context.SaveChangesAsync();
+            return Ok("Chuyen trang thai thanh cong");
+        }
+
+        [HttpPut("MoveProduct/{id}&{adress}")]
+        public async Task<IActionResult> MoveProduct(int id, string adress)
+        {
+            var product = await _context.Products.FindAsync(id);
+            if (product == null)
+                return NotFound();
+            product.Storage = adress;
+            _context.Entry(product).State = EntityState.Modified;
+            await _context.SaveChangesAsync();
+            return Ok("Chuyen san pham thanh cong");
+        }
+
+        [HttpPut("Change/{id}&{status}&{adress}")]
+        public async Task<IActionResult> Change(int id, string status, string adress)
+        {
+            var product = await _context.Products.FindAsync(id);
+            if (product == null)
+                return NotFound();
+            product.Status = status;
+            product.Storage = adress;
+            _context.Entry(product).State = EntityState.Modified;
+            await _context.SaveChangesAsync();
+            return Ok("Thay doi duoc chap nhan");
+        }
+
         [HttpPut("Sell/{id}")]
         public async Task<IActionResult> Sell(int id)
         {
@@ -128,13 +165,13 @@ namespace BigCorp.Controllers
             return Ok("Giao dich thanh cong");
         }
 
-        [HttpPut("maintain/{id}")]
-        public async Task<IActionResult> mainTain(int id)
+        [HttpPut("Maintain/{id}")]
+        public async Task<IActionResult> Maintain(int id)
         {
             var product = await _context.Products.FindAsync(id);
             if (product == null)
                 return NotFound();
-            if (product.Status == "Moi")
+            if (product.Status == "Chua ban")
                 return BadRequest("San pham chuan can bao duong");
             if (product.Exp < DateTime.Now)
             {
@@ -147,8 +184,8 @@ namespace BigCorp.Controllers
             return Ok("Da dem di bao duong");
         }
 
-        [HttpPut("returnProduct/{id}")]
-        public async Task<IActionResult> returnProduct(int id)
+        [HttpPut("ReturnProduct/{id}")]
+        public async Task<IActionResult> EeturnProduct(int id)
         {
             var product = await _context.Products.FindAsync(id);
             if (product == null)
@@ -161,7 +198,7 @@ namespace BigCorp.Controllers
             return Ok("Da tra lai san pham cho khach hang");
         }
 
-        [HttpPut("refund/{id}")]
+        [HttpPut("Refund/{id}")]
         public async Task<IActionResult> Refund(int id)
         {
             var product = await _context.Products.FindAsync(id);
@@ -171,19 +208,20 @@ namespace BigCorp.Controllers
                 return BadRequest("San pham khong the hoan tra ngay");
             if (DateTime.Now > product.Exp.AddMonths(12))
                 return BadRequest("San pham da qua han hoan tien");
-            product.Status = "Moi";
+            product.Status = "Chua ban";
+            product.Exp = product.Mfg;
             _context.Entry(product).State = EntityState.Modified;
             await _context.SaveChangesAsync();
             return Ok("San pham da duoc hoan tien");
         }
 
-        [HttpDelete("recycle/{id}")]
-        public async Task<IActionResult> recycle(int id)
+        [HttpDelete("Recycle/{id}")]
+        public async Task<IActionResult> Recycle(int id)
         {
             var product = await _context.Products.FindAsync(id);
             if (product == null)
                 return NotFound();
-            if (product.Status != "Moi")
+            if (product.Status != "Chua ban")
                 return BadRequest("San pham khong the tai che");
             if (product.Exp < product.Mfg.AddMonths(48))
                 return BadRequest("San pham chua can tai che");
