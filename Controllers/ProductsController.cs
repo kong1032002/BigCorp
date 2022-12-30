@@ -113,6 +113,13 @@ namespace BigCorp.Controllers
             return Ok(lst);
         }
 
+        [HttpGet("Storage/{storage}")]
+        public async Task<ActionResult<IEnumerable<Product>>> GetProductByStorage(string storage)
+        {
+            var lst = await _context.Products.Include(p => p.ProductLine).Where(m => m.Storage == Storage).ToListAsync();
+            return Ok(lst);
+        }
+
         [HttpPut("ChangeStatus/{id}&{status}")]
         public async Task<IActionResult> ChangeStatus(int id, string status)
         {
